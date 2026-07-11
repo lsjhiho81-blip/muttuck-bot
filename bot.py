@@ -78,4 +78,4 @@ async def on_ready():
     print(f'🤖 로그인 성공: {bot.user.name}')
 
 keep_alive()
-bot.run(os.environ.get('DISCORD_TOKEN'))
+bot.run(os.environ.get('MTUyNTQwNDM5MDEwMDMwODA5OA.GE1KYA.2iAJS4xG8oDpuirI4wtZsUxk7W2rM52Qq2k3ss'))
