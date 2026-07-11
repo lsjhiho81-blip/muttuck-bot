@@ -40,10 +40,10 @@ bot = MyBot()
     # 서버, 디엠, 그룹디엠 어디서든 쓸 수 있게 설정
     contexts={discord.InteractionContextType.guild, discord.InteractionContextType.bot_dm, discord.InteractionContextType.private_channel}
 )
-@app_commands.describe(문구="도배할 내용", 횟수="반복 횟수 (최대 100회)")
+@app_commands.describe(문구="도배할 내용", 횟수="반복 횟수 (최대 10회)")
 async def slash_도배(interaction: discord.Interaction, 문구: str, 횟수: int):
-    if 횟수 > 100:
-        await interaction.response.send_message("⚠️ 최대 100번까지만 가능합니다!", ephemeral=True)
+    if 횟수 > 10:
+        await interaction.response.send_message("⚠️ 최대 10번까지만 가능합니다!", ephemeral=True)
         return
 
     # 첫 번째 메시지는 응답으로 보냅니다.
@@ -54,7 +54,7 @@ async def slash_도배(interaction: discord.Interaction, 문구: str, 횟수: in
     for i in range(횟수 - 1):
         try:
             await interaction.channel.send(문구)
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.5)
         except:
             break
 
