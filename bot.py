@@ -31,13 +31,14 @@ class MyBot(commands.Bot):
 bot = MyBot()
 
 # --- 어디서든(디엠 포함) 쓸 수 있는 도배 명령어 ---
-# 에러 방지를 위해 숫자로 직접 설정 (0: 서버 설치, 1: 유저 설치)
 @bot.tree.command(
     name="도배", 
-    description="원하는 문구를 반복해서 출력합니다.",
-    integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install},
-    contexts={discord.InteractionContextType.guild, discord.InteractionContextType.bot_dm, discord.InteractionContextType.private_channel}
+    description="원하는 문구를 반복해서 출력합니다."
 )
+# 유저 설치와 서버 설치 모두 허용
+@app_commands.installs(guild=True, user=True)
+# 서버, 봇디엠, 개인디엠 어디서든 사용 가능하게 설정
+@app_commands.allowed_contexts(guild=True, dms=True, private_channels=True)
 @app_commands.describe(문구="도배할 내용", 횟수="반복 횟수 (최대 10회)")
 async def slash_도배(interaction: discord.Interaction, 문구: str, 횟수: int):
     if 횟수 > 10:
@@ -56,10 +57,10 @@ async def slash_도배(interaction: discord.Interaction, 문구: str, 횟수: in
 # --- 어디서든 쓸 수 있는 청소 명령어 ---
 @bot.tree.command(
     name="청소", 
-    description="메시지를 삭제합니다. (서버 전용)",
-    integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install},
-    contexts={discord.InteractionContextType.guild, discord.InteractionContextType.bot_dm, discord.InteractionContextType.private_channel}
+    description="메시지를 삭제합니다. (서버 전용)"
 )
+@app_commands.installs(guild=True, user=True)
+@app_commands.allowed_contexts(guild=True, dms=True, private_channels=True)
 @app_commands.describe(수="삭제할 메시지 개수")
 async def slash_청소(interaction: discord.Interaction, 수: int):
     if not interaction.guild:
@@ -78,4 +79,3 @@ async def on_ready():
 
 keep_alive()
 bot.run(os.environ.get('DISCORD_TOKEN'))
-
