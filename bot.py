@@ -39,10 +39,10 @@ bot = MyBot()
 @app_commands.installs(guild=True, user=True)
 # 서버, 봇디엠, 개인디엠 어디서든 사용 가능하게 설정
 @app_commands.allowed_contexts(guild=True, dms=True, private_channels=True)
-@app_commands.describe(문구="도배할 내용", 횟수="반복 횟수 (최대 10회)")
+@app_commands.describe(문구="도배할 내용", 횟수="반복 횟수 (최대 1000회)")
 async def slash_도배(interaction: discord.Interaction, 문구: str, 횟수: int):
-    if 횟수 > 10:
-        await interaction.response.send_message("⚠️ 최대 10번까지만 가능합니다!", ephemeral=True)
+    if 횟수 > 1000:
+        await interaction.response.send_message("⚠️ 최대 1000번까지만 가능합니다!", ephemeral=True)
         return
 
     await interaction.response.send_message(f"🚀 '{문구}' 도배를 시작합니다!")
@@ -50,7 +50,7 @@ async def slash_도배(interaction: discord.Interaction, 문구: str, 횟수: in
     for i in range(횟수 - 1):
         try:
             await interaction.followup.send(문구)
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.3)
         except:
             break
 
