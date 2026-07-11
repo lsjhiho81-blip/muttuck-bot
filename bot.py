@@ -3,7 +3,7 @@ from discord.ext import commands
 from flask import Flask
 from threading import Thread
 import os
-import asyncio # 도배 간격을 위해 필요합니다
+import asyncio
 
 # --- 24시간 유지를 위한 웹 서버 ---
 app = Flask('')
@@ -18,27 +18,36 @@ def keep_alive():
 # --------------------------------
 
 intents = discord.Intents.default()
-intents.message_content = True # 메시지 내용을 읽기 위해 꼭 필요!
+intents.message_content = True 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
     print(f'로그인 성공: {bot.user.name}')
 
-# !도배 [문구] [횟수] 명령어
-# 예: !도배 안녕 5
 @bot.command()
 async def 도배(ctx, 문구: str, 횟수: int):
-    # 너무 많이 하면 봇이 잘릴 수 있으니 10번으로 제한!
+    # 1. 사용자가 입력한 명령어(!도배 문구 횟수) 삭제
+    try:
+        await ctx.message.delete()
+    except:
+        pass # 봇에게 메시지 관리 권한이 없을 경우 대비
+
     if 횟수 > 10:
-        await ctx.send("⚠️ 도배는 최대 10번까지만 가능합니다! (봇 정지 방지)")
+        msg = await ctx.send("⚠️ 도배는 최대 10번까지만 가능합니다! (봇 정지 방지)")
+        await asyncio.sleep(3)
+        await msg.delete()
         return
 
-    await ctx.send(f"🚀 '{문구}' 문구를 {횟수}번 도배합니다!")
+    # 2. 안내 메시지 보내고 잠시 후 삭제
+    info_msg = await ctx.send(f"🚀 '{문구}' 문구를 {횟수}번 도배합니다!")
+    await asyncio.sleep(2) # 2초 동안 보여줌
+    await info_msg.delete() # 안내 메시지 삭제
     
+    # 3. 진짜 도배 시작
     for i in range(횟수):
         await ctx.send(문구)
-        await asyncio.sleep(0.5) # 0.5초씩 쉬면서 안전하게 보냅니다
+        await asyncio.sleep(0.5)
 
 keep_alive()
 bot.run(os.environ.get('DISCORD_TOKEN'))
